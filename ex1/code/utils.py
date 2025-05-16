@@ -37,11 +37,13 @@ def fetch(url: str, delay: float = 0) -> str:
     fname.write_text(resp.text, encoding="utf‑8")
     return resp.text
 
-def load_csv(filename: str, expected_cols: List[str], sort_prefix: str) -> pd.DataFrame:
+def load_csv(filename: str, expected_cols: List[str], sort_prefix: str, save: bool = False) -> pd.DataFrame:
     df = pd.read_csv(DATA_DIR / filename, na_values=["None"], keep_default_na=True)
     assert all(col in df.columns for col in expected_cols), f"{filename}: missing cols"
-    df.head(5).to_csv(OUTPUT_DIR / f"{sort_prefix}_before_sort.csv", index=False)
+    if save:
+        df.head(5).to_csv(OUTPUT_DIR / f"{sort_prefix}_before_sort.csv", index=False)
     df = df.sort_values("Country")
-    df.head(5).to_csv(OUTPUT_DIR / f"{sort_prefix}_after_sort.csv", index=False)
-    df.describe().to_csv(OUTPUT_DIR / f"{sort_prefix}_describe.csv")
+    if save:
+        df.head(5).to_csv(OUTPUT_DIR / f"{sort_prefix}_after_sort.csv", index=False)
+        df.describe().to_csv(OUTPUT_DIR / f"{sort_prefix}_describe.csv")
     return df
