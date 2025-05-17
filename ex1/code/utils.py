@@ -40,10 +40,62 @@ def fetch(url: str, delay: float = 0) -> str:
 def load_csv(filename: str, expected_cols: List[str], sort_prefix: str, save: bool = False) -> pd.DataFrame:
     df = pd.read_csv(DATA_DIR / filename, na_values=["None"], keep_default_na=True)
     assert all(col in df.columns for col in expected_cols), f"{filename}: missing cols"
+    print(f"{expected_cols} cols exist in dataframe")
+    for col in ["GDP_per_capita_PPP", "Population"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+    print("Ensured numeric types")
     if save:
         df.head(5).to_csv(OUTPUT_DIR / f"{sort_prefix}_before_sort.csv", index=False)
+    print(df.head())
     df = df.sort_values("Country")
+    print(df.head())
     if save:
         df.head(5).to_csv(OUTPUT_DIR / f"{sort_prefix}_after_sort.csv", index=False)
         df.describe().to_csv(OUTPUT_DIR / f"{sort_prefix}_describe.csv")
     return df
+
+def confirm_cols(df, expected_cols: List[str]) -> pd.DataFrame:
+        assert all(col in df.columns for col in expected_cols)
+
+def read_csv(filename: str):
+    return pd.read_csv(DATA_DIR / filename, na_values=["None"], keep_default_na=True)
+
+def preview():
+    import pandas as pd
+    from pathlib import Path
+
+    DATA = Path("data")  # adjust if raw CSVs live elsewhere
+    OUT = Path("output");
+    OUT.mkdir(exist_ok=True)
+
+
+
+    gdp = read_csv("gdp_per_capita_2021.csv")
+    pop = read_csv("population_2021.csv")
+
+    # numeric fix
+    for col in ["GDP_per_capita_PPP", "Population"]:
+        if col in gdp.columns:
+            gdp[col] = pd.to_numeric(gdp[col], errors="coerce")
+        if col in pop.columns:
+            pop[col] = pd.to_numeric(pop[col], errors="coerce")
+
+    # before sort snapshots
+    gdp.head().to_csv(OUT / "gdp_before_sort.csv", index=False)
+    pop.head().to_csv(OUT / "pop_before_sort.csv", index=False)
+
+    # after sort snapshots
+    (gdp.sort_values("Country").head()
+     .to_csv(OUT / "gdp_after_sort.csv", index=False))
+    (pop.sort_values("Country").head()
+     .to_csv(OUT / "pop_after_sort.csv", index=False))
+
+    # describe tables
+    gdp.describe().to_csv(OUT / "gdp_describe.csv")
+    pop.describe().to_csv(OUT / "pop_describe.csv")
+
+if __name__ == "__main__":
+    print("!")
