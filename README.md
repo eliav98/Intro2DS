@@ -11,8 +11,15 @@ cd Intro2DS
 
 ```bash
 python -m venv .venv
-source .venv\Scripts\activate
+.venv\Scripts\activate
 ```
+
+
+✅ If successful, your prompt should change to something like:
+
+> ```
+> (.venv) C:\project_dir\Intro2DS>
+> ```
 
 ### 3. Install dependencies
 
