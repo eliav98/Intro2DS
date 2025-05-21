@@ -51,7 +51,8 @@ def parse_country_page(html: str) -> Dict[str, _Number]:
 
     # ---- 2) Urbanisation paragraph ------------------------------------------------
     urb_h2 = soup.find(id="urb")
-    if urb_h2 and (p := urb_h2.find_next("p")):
+    p = urb_h2.find_next("p")
+    if urb_h2 and p:
         txt = p.get_text(" ", strip=True)
         pct = re.search(r"([0-9][0-9.,]*)%", txt)
         abs_ = re.search(r"\(([0-9][0-9,]+)\s*people", txt)
@@ -60,7 +61,8 @@ def parse_country_page(html: str) -> Dict[str, _Number]:
 
     # ---- 3) Population‑density paragraph -----------------------------------------
     dens_h2 = soup.find(id="population-density")
-    if dens_h2 and (p := dens_h2.find_next("p")):
+    p = dens_h2.find_next("p")
+    if dens_h2 and p:
         m = re.search(r"\b([0-9][0-9.,]*)\s*people per Km", p.get_text())
         out["PopulationDensity"] = _to_float(m.group(1)) if m else None
 
