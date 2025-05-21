@@ -7,12 +7,50 @@ from ex1.code.utils import DEMOGRAPHICS_DATA_FILENAME, GDP_DATA_FILENAME, POP_DA
 def load(name: str):
     return pd.read_csv(OUTPUT_DIR/ name)
 
-def z(s: pd.Series):
-    return (s - s.mean()) / s.std(ddof=0)
 
 def merge_dfs(d: pd.DataFrame, g: pd.DataFrame, p: pd.DataFrame) -> pd.DataFrame:
     df = d.join(g, how="inner").join(p, how="inner")
     return df
+
+
+
+def z(s: pd.Series) -> pd.Series:
+    """
+    Compute z-score normalization for a given numeric series.
+    Resulting values have mean 0 and standard deviation 1.
+    """
+    return (s - s.mean()) / s.std(ddof=0)
+
+def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Perform feature engineering on merged country-level data.
+
+    Adds the following columns:
+    - TotalGDP: GDP_per_capita_PPP * Population
+    - LogGDPperCapita: log10 of GDP per capita
+    - LogPopulation: log10 of Population
+    - LifeExpectancy_z: z-score normalized LifeExpectancy_Both
+    - LogGDPpc_z: z-score normalized LogGDPperCapita
+    - LogPop_z: z-score normalized LogPopulation
+
+    Parameters:
+        df (pd.DataFrame): The merged dataset with demographics, GDP, and population.
+
+    Returns:
+        pd.DataFrame: DataFrame with engineered features added.
+    """
+    df = df.copy()
+
+    df["TotalGDP"] = df["GDP_per_capita_PPP"] * df["Population"]
+    df["LogGDPperCapita"] = np.log10(df["GDP_per_capita_PPP"])
+    df["LogPopulation"] = np.log10(df["Population"])
+
+    df["LifeExpectancy_z"] = z(df["LifeExpectancy_Both"])
+    df["LogGDPpc_z"] = z(df["LogGDPperCapita"])
+    df["LogPop_z"] = z(df["LogPopulation"])
+
+    return df
+
 
 def main():
     d = clean_demographics(load(DATA_DIR / DEMOGRAPHICS_DATA_FILENAME))
