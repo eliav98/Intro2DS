@@ -10,6 +10,10 @@ def load(name: str):
 def z(s: pd.Series):
     return (s - s.mean()) / s.std(ddof=0)
 
+def merge_dfs(d: pd.DataFrame, g: pd.DataFrame, p: pd.DataFrame) -> pd.DataFrame:
+    df = d.join(g, how="inner").join(p, how="inner")
+    return df
+
 def main():
     d = clean_demographics(load(DATA_DIR / DEMOGRAPHICS_DATA_FILENAME))
     g = clean_gdp(load(DATA_DIR / GDP_DATA_FILENAME))
