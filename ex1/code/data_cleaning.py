@@ -11,10 +11,18 @@ def standardize_country(name: str) -> str:
 
 def clean_demographics(df: pd.DataFrame) -> pd.DataFrame:
     original = df.copy()
+
     # numeric conversion
-    for col in [c for c in df.columns if c != "UrbanPopulation_Absolute"]:
+    numeric_cols = [
+        "LifeExpectancy_Both",
+        "LifeExpectancy_Female",
+        "LifeExpectancy_Male",
+        "UrbanPopulation_Percentage",
+        "UrbanPopulation_Absolute",
+        "PopulationDensity"
+    ]
+    for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
-    df["UrbanPopulation_Absolute"] = pd.to_numeric(df["UrbanPopulation_Absolute"], errors="coerce")
 
     # remove invalid LifeExpectancyBoth
     mask_valid = df["LifeExpectancy_Both"].between(40, 100)

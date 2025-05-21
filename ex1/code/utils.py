@@ -10,6 +10,10 @@ BASE_URL = "https://www.worldometers.info"
 DEMOGRAPHICS_INDEX = f"{BASE_URL}/demographics/"
 DEMOGRAPHICS_HEADER = "Demographics of Countries"
 
+GDP_DATA_FILENAME = "gdp_per_capita_2021.csv"
+POP_DATA_FILENAME = "population_2021.csv"
+DEMOGRAPHICS_DATA_FILENAME = "demographics_data.csv"
+
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "output"
 CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"

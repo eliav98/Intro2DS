@@ -1,25 +1,13 @@
 import re
-import time
 from typing import Dict, List, Optional
-from pathlib import Path
 from urllib.parse import urljoin
 
 
 import pandas as pd
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup
 from tqdm.auto import tqdm
 
-# BASE_URL = "https://www.worldometers.info"
-# DEMOGRAPHICS_INDEX = f"{BASE_URL}/demographics/"
-# DEMOGRAPHICS_HEADER = "Demographics of Countries"
-# OUTPUT_DIR = Path(__file__).resolve().parent.parent / "output"
-# CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
-# CACHE_DIR.mkdir(exist_ok=True, parents=True)
-# OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
-#
-# RE_NUMBER = re.compile(r"[-+]??\d*[\d,]*\.?\d+")  # matches 1,234.56 too
-# _Number = Optional[float | int]
 
 from utils import CACHE_DIR, BASE_URL, _Number, DEMOGRAPHICS_INDEX, OUTPUT_DIR
 from utils import _to_float, fetch
@@ -84,7 +72,7 @@ def crawl_demographics(delay: float = 0, save: bool = False) -> pd.DataFrame:
     links = extract_country_links(index_html)
 
     records = {}
-    for country, url in tqdm(links.items(), desc="Crawling", unit="country"):
+    for country, url in tqdm(links.items(), desc="Crawling", unit="country", disable=True):
         html = fetch(url, delay=delay)
         records[country] = parse_country_page(html)
 
