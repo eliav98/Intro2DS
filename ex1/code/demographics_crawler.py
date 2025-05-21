@@ -12,7 +12,7 @@ If the website structure changes, the specific CSS selectors and regex used belo
 """
 
 import re
-from typing import Dict, Optional
+from typing import Dict
 from urllib.parse import urljoin
 
 import pandas as pd
@@ -158,4 +158,4 @@ def crawl_demographics(delay: float = 0, save: bool = False) -> pd.DataFrame:
 if __name__ == "__main__":
     print("Starting demographics crawl...")
     crawl_demographics(delay=0.1, save=True)
-    print("✅ Done.")
+    print("Done!")

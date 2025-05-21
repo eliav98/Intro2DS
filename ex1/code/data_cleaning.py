@@ -50,7 +50,6 @@ def tukey_outliers(series: pd.Series) -> pd.Series:
 
 def clean_gdp(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    # df["GDP_per_capita_PPP"] = pd.to_numeric(df["GDP_per_capita_PPP"].str.replace(",", ""), errors="coerce")
     removed = df[df["GDP_per_capita_PPP"].isna()]
     removed.to_csv(OUTPUT_DIR / "dropped_gdp.csv", index=False)
     df = df.dropna(subset=["GDP_per_capita_PPP"])
@@ -65,9 +64,8 @@ def clean_gdp(df: pd.DataFrame) -> pd.DataFrame:
 
 def clean_population(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    # df["Population"] = pd.to_numeric(df["Population"].str.replace(",", ""), errors="coerce")
     removed = df[df["Population"].isna()]
-    removed.to_csv(OUTPUT_DIR / "dropped_population.csv", index=False)
+    # removed.to_csv(OUTPUT_DIR / "dropped_population.csv", index=False)
     df = df.dropna(subset=["Population"])
 
     # log‑Tukey outliers
