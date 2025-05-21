@@ -2,15 +2,15 @@ import re
 from typing import Dict, List, Optional
 from urllib.parse import urljoin
 
-
 import pandas as pd
 
 from bs4 import BeautifulSoup
 from tqdm.auto import tqdm
 
+from utils import (CACHE_DIR, BASE_URL, DEMOGRAPHICS_INDEX, OUTPUT_DIR,
+                   _to_float, _Number,
+                   fetch)
 
-from utils import CACHE_DIR, BASE_URL, _Number, DEMOGRAPHICS_INDEX, OUTPUT_DIR
-from utils import _to_float, fetch
 
 
 def extract_country_links(index_html: str) -> Dict[str, str]:
@@ -55,7 +55,7 @@ def parse_country_page(html: str) -> Dict[str, _Number]:
     if urb_h2 and p:
         txt = p.get_text(" ", strip=True)
         pct = re.search(r"([0-9][0-9.,]*)%", txt)
-        abs_ = re.search(r"\(([0-9][0-9,]+)\s*people", txt)
+        abs_ = re.search(r"\(([0-9][0-9,]*)\s*people", txt)
         out["UrbanPopulation_Percentage"] = _to_float(pct.group(1)) if pct else None
         out["UrbanPopulation_Absolute"] = int(abs_.group(1).replace(",", "")) if abs_ else None
 
@@ -67,6 +67,7 @@ def parse_country_page(html: str) -> Dict[str, _Number]:
         out["PopulationDensity"] = _to_float(m.group(1)) if m else None
 
     return out
+
 
 def crawl_demographics(delay: float = 0, save: bool = False) -> pd.DataFrame:
     """Return df_demographics and write sorted/unsorted CSVs."""
@@ -89,8 +90,6 @@ def crawl_demographics(delay: float = 0, save: bool = False) -> pd.DataFrame:
         df.head(10).to_csv(OUTPUT_DIR / "demographics_after_sort.csv")
         df.to_csv(OUTPUT_DIR / "demographics_data.csv")
     return df
-
-
 
 
 if __name__ == "__main__":
